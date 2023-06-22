@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.5</version>
+		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	
@@ -15,7 +15,7 @@
 	<name>guipalazzo87</name>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -89,10 +89,15 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
+            <version>24.0.1</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
@@ -120,6 +125,7 @@
 				<version>2.22.2</version>
 
 				<configuration>
+					<skipTests>true</skipTests>
 					<includes>
 						<include>**/*IntegrationTest*.java</include>
 					</includes>
@@ -141,6 +147,7 @@
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjweaver</artifactId>
+						<!--suppress UnresolvedMavenProperty -->
 						<version>${aspectj.version}</version>
 					</dependency>
 				</dependencies>

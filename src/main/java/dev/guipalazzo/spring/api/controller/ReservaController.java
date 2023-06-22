@@ -28,11 +28,11 @@ public class ReservaController {
 
     @Autowired
     private ReservaSalvarReservaService reservaSalvarReservaService;
-    private ReservaListarPorAnuncianteService reservaListarPorAnuncianteService;
-    private ReservaListarPorSolicitanteService reservaListarPorSolicitanteService;
-    private ReservaPagarReservaService reservaPagarReservaService;
-    private ReservaCancelarReservaService reservaCancelarReservaService;
-    private ReservaEstornarReservaService reservaEstornarReservaService;
+    private final ReservaListarPorAnuncianteService reservaListarPorAnuncianteService;
+    private final ReservaListarPorSolicitanteService reservaListarPorSolicitanteService;
+    private final ReservaPagarReservaService reservaPagarReservaService;
+    private final ReservaCancelarReservaService reservaCancelarReservaService;
+    private final ReservaEstornarReservaService reservaEstornarReservaService;
 
     public ReservaController(ReservaSalvarReservaService reservaSalvarReservaService,
                              ReservaListarPorAnuncianteService reservaListarPorAnuncianteService,

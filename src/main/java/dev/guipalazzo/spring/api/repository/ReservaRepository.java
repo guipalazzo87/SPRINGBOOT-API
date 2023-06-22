@@ -3,13 +3,14 @@ package dev.guipalazzo.spring.api.repository;
 import dev.guipalazzo.spring.api.domain.Reserva;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface ReservaRepository extends PagingAndSortingRepository<Reserva,Long> {
+public interface ReservaRepository extends JpaRepository<Reserva,Long> {
 
     Page<Reserva> findByAnuncioAnuncianteIdAndAnuncioAtivoTrue(Long idAnunciante, Pageable paging);
 
@@ -47,4 +48,6 @@ public interface ReservaRepository extends PagingAndSortingRepository<Reserva,Lo
     Optional<Reserva> findByIdAndAnuncioAtivoTrue(Long idReserva);
 
     Page<Reserva> findBySolicitanteIdAndAnuncioAtivoTrue(Long idSolicitante, Pageable paging);
+
+    Reserva save(Reserva reserva);
 }

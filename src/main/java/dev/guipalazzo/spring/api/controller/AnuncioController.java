@@ -27,7 +27,7 @@ public class AnuncioController {
 
     @Autowired
     private AnuncioService anuncioService;
-    private AnuncioSalvarService anuncioSalvarService;
+    private final AnuncioSalvarService anuncioSalvarService;
 
     public AnuncioController(AnuncioService anuncioService, AnuncioSalvarService anuncioSalvarService) {
         this.anuncioService = anuncioService;

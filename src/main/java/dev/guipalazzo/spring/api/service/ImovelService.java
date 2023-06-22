@@ -20,9 +20,9 @@ import java.util.Optional;
 @Service
 public class ImovelService {
 
-    private ImovelRepository imovelRepository;
-    private UsuarioService usuarioService;
-    private AnuncioListarPorImovelService anuncioListarPorImovelService;
+    private final ImovelRepository imovelRepository;
+    private final UsuarioService usuarioService;
+    private final AnuncioListarPorImovelService anuncioListarPorImovelService;
 
     @Autowired
     public ImovelService(ImovelRepository imovelRepository,

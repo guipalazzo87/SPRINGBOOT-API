@@ -2,9 +2,10 @@ package dev.guipalazzo.spring.api.request;
 
 import dev.guipalazzo.spring.api.domain.FormaPagamento;
 import dev.guipalazzo.spring.api.domain.TipoAnuncio;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -2,10 +2,8 @@ package dev.guipalazzo.spring.api.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.*;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 

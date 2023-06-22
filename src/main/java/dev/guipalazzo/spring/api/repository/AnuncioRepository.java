@@ -3,13 +3,14 @@ package dev.guipalazzo.spring.api.repository;
 import dev.guipalazzo.spring.api.domain.Anuncio;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface AnuncioRepository extends PagingAndSortingRepository<Anuncio, Long> {
+public interface AnuncioRepository extends JpaRepository<Anuncio, Long> {
 
     Page<Anuncio> findByAnuncianteIdAndAtivoTrue(Long idAnunciante, Pageable paging);
 

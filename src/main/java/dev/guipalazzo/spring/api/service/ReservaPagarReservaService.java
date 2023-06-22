@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class ReservaPagarReservaService {
 
-    private ReservaRepository reservaRepository;
+    private final ReservaRepository reservaRepository;
 
     @Autowired
     public ReservaPagarReservaService(ReservaRepository reservaRepository) {

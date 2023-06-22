@@ -3,7 +3,7 @@ package dev.guipalazzo.spring.api.domain;
 import lombok.*;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Entity

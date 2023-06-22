@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,11 +47,11 @@ public class UsuarioService {
                 new ParameterizedTypeReference<String>() {};
 
         try {
-            RequestEntity<Void> request = RequestEntity.get("https://some-random-api.ml/img/dog")
+            RequestEntity<Void> request = RequestEntity.get("https://picsum.photos/200")
                     .accept(MediaType.APPLICATION_JSON).build();
-            String urlString = restTemplate.exchange(request, responseType).getBody();
+            String urlString = Objects.requireNonNull(restTemplate.exchange(request, responseType).getHeaders().get("Picsum-Id")).get(0);
             if (urlString != null){
-                usuario.setAvatarUrl(urlString.substring(9,urlString.length()-2));
+                usuario.setAvatarUrl("https://picsum.photos/id/" + urlString + "/200");
             }
         } catch (Exception e) {
             e.printStackTrace();

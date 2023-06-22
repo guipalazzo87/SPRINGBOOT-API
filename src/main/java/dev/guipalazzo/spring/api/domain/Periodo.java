@@ -3,7 +3,8 @@ package dev.guipalazzo.spring.api.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.*;
+
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 

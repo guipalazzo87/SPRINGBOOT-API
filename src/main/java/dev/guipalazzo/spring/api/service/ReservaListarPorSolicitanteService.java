@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class ReservaListarPorSolicitanteService {
-    private ReservaRepository reservaRepository;
+    private final ReservaRepository reservaRepository;
 
     @Autowired
     public ReservaListarPorSolicitanteService(ReservaRepository reservaRepository) {

@@ -23,7 +23,6 @@ public class ReservaSalvarReservaService {
     private final AnuncioService anuncioService;
     private final ReservaRepository reservaRepository;
 
-    @Autowired
     public ReservaSalvarReservaService(UsuarioService usuarioService,
                                        AnuncioService anuncioService,
                                        ReservaRepository reservaRepository) {
@@ -33,14 +32,13 @@ public class ReservaSalvarReservaService {
     }
 
     public InformacaoReservaResponse execute(CadastrarReservaRequest body) {
-
         Optional<Usuario> optionalSolicitante = usuarioService.listarUm(body.getIdSolicitante());
-        if (!optionalSolicitante.isPresent())
+        if (optionalSolicitante.isEmpty())
             throw new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), body.getIdSolicitante());
         Usuario solicitante = optionalSolicitante.orElse(null);
 
         Optional<Anuncio> optionalAnuncio = anuncioService.listarAnuncioPorId(body.getIdAnuncio());
-        if (!optionalAnuncio.isPresent())
+        if (optionalAnuncio.isEmpty())
             throw new ObjetoNaoEncontradoPorIdException(Anuncio.class.getSimpleName(), body.getIdAnuncio());
         Anuncio anuncio = optionalAnuncio.orElse(null);
 

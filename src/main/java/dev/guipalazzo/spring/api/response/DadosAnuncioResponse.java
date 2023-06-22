@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.guipalazzo.spring.api.domain.FormaPagamento;
 import dev.guipalazzo.spring.api.domain.Imovel;
 import dev.guipalazzo.spring.api.domain.Usuario;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.List;
 
 

@@ -2,7 +2,7 @@ package dev.guipalazzo.spring.api.domain;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Getter
