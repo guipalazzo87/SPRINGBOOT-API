@@ -5,7 +5,6 @@ import dev.guipalazzo.spring.api.exception.ObjetoNaoEncontradoPorIdException;
 import dev.guipalazzo.spring.api.request.CadastrarImovelRequest;
 import dev.guipalazzo.spring.api.service.ImovelService;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +24,11 @@ import java.util.Map;
 @RequestMapping("/imoveis")
 public class ImovelController {
 
-    @Autowired
-    private ImovelService imovelService;
+    private final ImovelService imovelService;
+
+    public ImovelController(ImovelService imovelService) {
+        this.imovelService = imovelService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -103,13 +105,10 @@ public class ImovelController {
 
     @SneakyThrows
     private Sort.Direction getSortDirection(String s) {
-        switch (s) {
-            case "asc":
-                return Sort.Direction.ASC;
-            case "desc":
-                return Sort.Direction.DESC;
-            default:
-                throw new Exception();
-        }
+        return switch (s) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new Exception();
+        };
     }
 }

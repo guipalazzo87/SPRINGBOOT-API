@@ -1,11 +1,8 @@
 package dev.guipalazzo.spring.api.controller;
 
 import dev.guipalazzo.spring.api.domain.Anuncio;
-import dev.guipalazzo.spring.api.request.CadastrarAnuncioRequest;
-import dev.guipalazzo.spring.api.service.AnuncioSalvarService;
 import dev.guipalazzo.spring.api.service.AnuncioService;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +12,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,20 +21,19 @@ import java.util.Map;
 @RequestMapping("/anuncios")
 public class AnuncioController {
 
-    @Autowired
-    private AnuncioService anuncioService;
-    private final AnuncioSalvarService anuncioSalvarService;
+//    private final AnuncioSalvarService anuncioSalvarService;
+    private final AnuncioService anuncioService;
 
-    public AnuncioController(AnuncioService anuncioService, AnuncioSalvarService anuncioSalvarService) {
+    public AnuncioController(AnuncioService anuncioService) {//, AnuncioSalvarService anuncioSalvarService) {
         this.anuncioService = anuncioService;
-        this.anuncioSalvarService = anuncioSalvarService;
+//        this.anuncioSalvarService = anuncioSalvarService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Anuncio salvar(@RequestBody @Valid CadastrarAnuncioRequest body) {
-        return anuncioSalvarService.salvar(body);
-    }
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Anuncio salvar(@RequestBody @Valid CadastrarAnuncioRequest body) {
+//        return anuncioSalvarService.salvar(body);
+//    }
 
     @GetMapping
     public ResponseEntity<Page<Anuncio>> listarTodos(
@@ -102,13 +97,10 @@ public class AnuncioController {
 
     @SneakyThrows
     private Sort.Direction getSortDirection(String s) {
-        switch (s) {
-            case "asc":
-                return Sort.Direction.ASC;
-            case "desc":
-                return Sort.Direction.DESC;
-            default:
-                throw new Exception();
-        }
+        return switch (s) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new Exception();
+        };
     }
 }

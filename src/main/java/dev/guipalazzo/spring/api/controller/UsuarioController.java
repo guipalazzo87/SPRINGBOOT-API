@@ -4,9 +4,11 @@ import dev.guipalazzo.spring.api.domain.Usuario;
 import dev.guipalazzo.spring.api.exception.NenhumUsuarioEncontradoPorCpfException;
 import dev.guipalazzo.spring.api.exception.ObjetoNaoEncontradoPorIdException;
 import dev.guipalazzo.spring.api.request.AtualizarUsuarioRequest;
-import dev.guipalazzo.spring.api.service.UsuarioService;
+import dev.guipalazzo.spring.api.service.UsuarioListarTodosService;
+import dev.guipalazzo.spring.api.service.UsuarioListarUmService;
+import dev.guipalazzo.spring.api.service.UsuarioSalvarUsuarioService;
+import dev.guipalazzo.spring.api.service.UsuarioListarPorCpfService;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -27,13 +29,25 @@ import java.util.Map;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+
+    private final UsuarioListarPorCpfService usuarioListarPorCpfService;
+
+    private final UsuarioListarTodosService usuarioListarTodosService;
+
+    private final UsuarioSalvarUsuarioService usuarioSalvarUsuarioService;
+    private final UsuarioListarUmService usuarioListarUmService;
+
+    public UsuarioController(UsuarioListarPorCpfService usuarioListarPorCpfService, UsuarioListarTodosService usuarioListarTodosService, UsuarioSalvarUsuarioService usuarioSalvarUsuarioService, UsuarioListarUmService usuarioListarUmService) {
+        this.usuarioListarPorCpfService = usuarioListarPorCpfService;
+        this.usuarioListarTodosService = usuarioListarTodosService;
+        this.usuarioSalvarUsuarioService = usuarioSalvarUsuarioService;
+        this.usuarioListarUmService = usuarioListarUmService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario salvar(@Valid @RequestBody Usuario usuario) {
-        return usuarioService.salvar(usuario);
+        return usuarioSalvarUsuarioService.salvar(usuario);
     }
 
     @GetMapping
@@ -43,24 +57,24 @@ public class UsuarioController {
             @RequestParam(defaultValue = "nome,asc") String[] sort
     ) {
         List<Order> ordenacao = getSort(sort);
-        Page<Usuario> lista = usuarioService.listAll(page, size, ordenacao);
+        Page<Usuario> lista = usuarioListarTodosService.listAll(page, size, ordenacao);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{idUsuario}")
     public Usuario listarUmPorId(@PathVariable Long idUsuario) {
-        return usuarioService.listarUm(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
+        return usuarioListarUmService.listarUm(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
     }
 
     @PutMapping(value = "/{idUsuario}")
     public Usuario atualizarUsuario(@PathVariable Long idUsuario,
                                     @Valid @RequestBody AtualizarUsuarioRequest body) {
-        return usuarioService.atualizar(idUsuario, body);
+        return usuarioListarUmService.atualizar(idUsuario, body);
     }
 
     @GetMapping(value = "/cpf/{cpf}")
     public Usuario listarUmPorCpf(@PathVariable String cpf) {
-        return usuarioService.listarPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
+        return usuarioListarPorCpfService.listarPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
     }
 
 
@@ -98,13 +112,10 @@ public class UsuarioController {
 
     @SneakyThrows
     private Sort.Direction getSortDirection(String s) {
-        switch (s) {
-            case "asc":
-                return Sort.Direction.ASC;
-            case "desc":
-                return Sort.Direction.DESC;
-            default:
-                throw new Exception();
-        }
+        return switch (s) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new Exception();
+        };
     }
 }

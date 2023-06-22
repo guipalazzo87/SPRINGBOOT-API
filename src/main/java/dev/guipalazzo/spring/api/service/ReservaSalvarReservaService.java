@@ -3,11 +3,10 @@ package dev.guipalazzo.spring.api.service;
 import dev.guipalazzo.spring.api.domain.*;
 import dev.guipalazzo.spring.api.exception.*;
 import dev.guipalazzo.spring.api.repository.ReservaRepository;
+import dev.guipalazzo.spring.api.request.CadastrarReservaRequest;
 import dev.guipalazzo.spring.api.response.DadosAnuncioResponse;
 import dev.guipalazzo.spring.api.response.DadosSolicitanteResponse;
 import dev.guipalazzo.spring.api.response.InformacaoReservaResponse;
-import dev.guipalazzo.spring.api.request.CadastrarReservaRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,20 +18,19 @@ import java.util.Optional;
 
 @Service
 public class ReservaSalvarReservaService {
-    private final UsuarioService usuarioService;
     private final AnuncioService anuncioService;
     private final ReservaRepository reservaRepository;
+    private final UsuarioListarUmService usuarioListarUmService;
 
-    public ReservaSalvarReservaService(UsuarioService usuarioService,
-                                       AnuncioService anuncioService,
-                                       ReservaRepository reservaRepository) {
-        this.usuarioService = usuarioService;
+    public ReservaSalvarReservaService(AnuncioService anuncioService,
+                                       ReservaRepository reservaRepository, UsuarioListarUmService usuarioListarUmService) {
         this.anuncioService = anuncioService;
         this.reservaRepository = reservaRepository;
+        this.usuarioListarUmService = usuarioListarUmService;
     }
 
     public InformacaoReservaResponse execute(CadastrarReservaRequest body) {
-        Optional<Usuario> optionalSolicitante = usuarioService.listarUm(body.getIdSolicitante());
+        Optional<Usuario> optionalSolicitante = usuarioListarUmService.listarUm(body.getIdSolicitante());
         if (optionalSolicitante.isEmpty())
             throw new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), body.getIdSolicitante());
         Usuario solicitante = optionalSolicitante.orElse(null);
@@ -46,7 +44,7 @@ public class ReservaSalvarReservaService {
             throw new SolicitanteNaoPodeSerAnuncianteException();
 
         if (anuncio.getImovel().getTipoImovel().equals(TipoImovel.HOTEL) && body.getQuantidadePessoas() < 2)
-            throw new PessoasMinimasException(2,anuncio.getImovel().getTipoImovel().toString());
+            throw new PessoasMinimasException(2, anuncio.getImovel().getTipoImovel().toString());
 
         LocalDateTime dataInicio = body.getPeriodo().getDataHoraInicial();
         LocalDateTime dataFim = body.getPeriodo().getDataHoraFinal();
@@ -54,7 +52,7 @@ public class ReservaSalvarReservaService {
         if (dataInicio.getHour() != 14 || dataFim.getHour() != 12) {
             dataInicio = LocalDateTime.parse(dataInicio.toLocalDate().toString() + "T14:00");
             dataFim = LocalDateTime.parse(dataFim.toLocalDate().toString() + "T12:00");
-            body.setPeriodo(new Periodo(dataInicio,dataFim));
+            body.setPeriodo(new Periodo(dataInicio, dataFim));
         }
 
         boolean imovelOcupado = reservaRepository.existsByAnuncioIdAndPeriodo_DataHoraInicialLessThanEqualAndPeriodo_DataHoraFinalGreaterThanEqualAndAtivoTrue(anuncio.getId(), dataFim, dataInicio);
@@ -75,7 +73,7 @@ public class ReservaSalvarReservaService {
         }
         if (d1 == null || d2 == null) throw new DatasInvalidasException();
 
-        long differenceInTime = d2.getTime()-d1.getTime();
+        long differenceInTime = d2.getTime() - d1.getTime();
         long diffInDays = (differenceInTime / (1000 * 60 * 60 * 24)) % 365;
 
         if (diffInDays < 0) throw new DatasInvalidasException();

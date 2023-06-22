@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public class ReservaListarPorAnuncianteService {
-    ReservaRepository reservaRepository;
+    final ReservaRepository reservaRepository;
 
     @Autowired
     public ReservaListarPorAnuncianteService(ReservaRepository reservaRepository) {
@@ -22,8 +22,7 @@ public class ReservaListarPorAnuncianteService {
 
     public Page<Reserva> execute(Integer page, Integer size, List<Sort.Order> ordenacao, Long idAnunciante) {
         Pageable paging = PageRequest.of(page, size, Sort.by(ordenacao));
-        Page<Reserva> resultadoPaginado = reservaRepository.findByAnuncioAnuncianteIdAndAnuncioAtivoTrue(idAnunciante, paging);
-        return resultadoPaginado;
+        return reservaRepository.findByAnuncioAnuncianteIdAndAnuncioAtivoTrue(idAnunciante, paging);
     }
 
 

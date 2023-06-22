@@ -22,7 +22,7 @@ public class ReservaCancelarReservaService {
 
     public void execute(Long idReserva) {
         Optional<Reserva> optionalReserva = reservaRepository.findByIdAndAnuncioAtivoTrue(idReserva);
-        if (!optionalReserva.isPresent())
+        if (optionalReserva.isEmpty())
             throw new ObjetoNaoEncontradoPorIdException(Reserva.class.getSimpleName(), idReserva);
         Reserva reserva = optionalReserva.orElse(null);
 

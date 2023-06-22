@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -49,5 +49,5 @@ public interface ReservaRepository extends JpaRepository<Reserva,Long> {
 
     Page<Reserva> findBySolicitanteIdAndAnuncioAtivoTrue(Long idSolicitante, Pageable paging);
 
-    Reserva save(Reserva reserva);
+    @NotNull @org.jetbrains.annotations.NotNull Reserva save(@NotNull @org.jetbrains.annotations.NotNull Reserva reserva);
 }

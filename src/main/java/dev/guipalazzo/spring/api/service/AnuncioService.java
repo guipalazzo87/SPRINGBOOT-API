@@ -28,8 +28,7 @@ public class AnuncioService {
                                      Integer size,
                                      List<Sort.Order> ordenacao) {
         Pageable paging = PageRequest.of(page, size, Sort.by(ordenacao));
-        Page<Anuncio> resultadoPaginado = anuncioRepository.findByAtivoTrue(paging);
-        return resultadoPaginado;
+        return anuncioRepository.findByAtivoTrue(paging);
     }
 
     public Page<Anuncio> listarPorAnunciante(Integer page,
@@ -37,8 +36,7 @@ public class AnuncioService {
                                              List<Sort.Order> ordenacao,
                                              Long idAnunciante) {
         Pageable paging = PageRequest.of(page, size, Sort.by(ordenacao));
-        Page<Anuncio> resultadoPaginado = anuncioRepository.findByAnuncianteIdAndAtivoTrue(idAnunciante, paging);
-        return resultadoPaginado;
+        return anuncioRepository.findByAnuncianteIdAndAtivoTrue(idAnunciante, paging);
     }
 
     public Optional<Anuncio> listarAnuncioPorId(Long idAnuncio) {

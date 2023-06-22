@@ -6,7 +6,6 @@ import dev.guipalazzo.spring.api.request.CadastrarReservaRequest;
 import dev.guipalazzo.spring.api.response.InformacaoReservaResponse;
 import dev.guipalazzo.spring.api.service.*;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -26,8 +25,7 @@ import java.util.Map;
 @RequestMapping("/reservas")
 public class ReservaController {
 
-    @Autowired
-    private ReservaSalvarReservaService reservaSalvarReservaService;
+    private final ReservaSalvarReservaService reservaSalvarReservaService;
     private final ReservaListarPorAnuncianteService reservaListarPorAnuncianteService;
     private final ReservaListarPorSolicitanteService reservaListarPorSolicitanteService;
     private final ReservaPagarReservaService reservaPagarReservaService;
@@ -129,7 +127,7 @@ public class ReservaController {
 
     // https://www.bezkoder.com/spring-boot-pagination-sorting-example/
     private List<Sort.Order> getSort(String[] sort) {
-        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        List<Sort.Order> orders = new ArrayList<>();
         try {
             if (sort[0].contains(",")) {
                 for (String sortOrder : sort) {
@@ -147,13 +145,10 @@ public class ReservaController {
 
     @SneakyThrows
     private Sort.Direction getSortDirection(String s) {
-        switch(s) {
-            case "asc":
-                return Sort.Direction.ASC;
-            case "desc":
-                return Sort.Direction.DESC;
-            default:
-                throw new Exception();
-        }
+        return switch (s) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new Exception();
+        };
     }
 }

@@ -1,8 +1,8 @@
 package dev.guipalazzo.spring.api.repository;
 
 import dev.guipalazzo.spring.api.domain.Usuario;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
@@ -14,5 +14,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByCpf(String cpf);
 
-    Usuario save(Usuario usuario);
+    @NotNull Usuario save(@NotNull Usuario usuario);
 }

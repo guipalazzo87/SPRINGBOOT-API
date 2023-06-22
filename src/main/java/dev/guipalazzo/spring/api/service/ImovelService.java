@@ -21,22 +21,21 @@ import java.util.Optional;
 public class ImovelService {
 
     private final ImovelRepository imovelRepository;
-    private final UsuarioService usuarioService;
     private final AnuncioListarPorImovelService anuncioListarPorImovelService;
+    private final UsuarioListarUmService usuarioListarUmService;
 
     @Autowired
     public ImovelService(ImovelRepository imovelRepository,
-                         UsuarioService usuarioService,
-                         AnuncioListarPorImovelService anuncioListarPorImovelService) {
+                         AnuncioListarPorImovelService anuncioListarPorImovelService, UsuarioListarUmService usuarioListarUmService) {
         this.imovelRepository = imovelRepository;
-        this.usuarioService = usuarioService;
         this.anuncioListarPorImovelService = anuncioListarPorImovelService;
+        this.usuarioListarUmService = usuarioListarUmService;
     }
 
     public Imovel salvar(CadastrarImovelRequest body) {
-        Optional<Usuario> optionalUsuario = usuarioService.listarUm(body.getIdProprietario());
+        Optional<Usuario> optionalUsuario = usuarioListarUmService.listarUm(body.getIdProprietario());
 
-        if (!optionalUsuario.isPresent())
+        if (optionalUsuario.isEmpty())
             throw new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), body.getIdProprietario());
         Usuario proprietario = optionalUsuario.orElse(null);
 
@@ -55,9 +54,8 @@ public class ImovelService {
                                     Integer size,
                                     List<Sort.Order> ordenacao) {
         Pageable paging = PageRequest.of(page, size, Sort.by(ordenacao));
-        Page<Imovel> resultadoPaginado = imovelRepository.findAll(paging);
 
-        return resultadoPaginado;
+        return imovelRepository.findAll(paging);
     }
 
     public Page<Imovel> listarPorProprietario(Integer page,
@@ -65,8 +63,7 @@ public class ImovelService {
                                               List<Sort.Order> ordenacao,
                                               Long idProprietario) {
         Pageable paging = PageRequest.of(page, size, Sort.by(ordenacao));
-        Page<Imovel> resultadoPaginado = imovelRepository.findByProprietarioId(idProprietario, paging);
-        return resultadoPaginado;
+        return imovelRepository.findByProprietarioId(idProprietario, paging);
     }
 
     public Optional<Imovel> listarImovelPorId(Long idImovel) {
