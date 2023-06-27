@@ -33,7 +33,7 @@ public class UsuarioController {
         this.serviceLayer = serviceLayer;
     }
 
-    @PostMapping
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario salvar(@Valid @RequestBody Usuario usuario) {
         return serviceLayer.salvarUsuario(usuario);
