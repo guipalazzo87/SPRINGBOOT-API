@@ -25,32 +25,17 @@ import java.util.Map;
 @RequestMapping("/reservas")
 public class ReservaController {
 
-    private final ReservaSalvarReservaService reservaSalvarReservaService;
-    private final ReservaListarPorAnuncianteService reservaListarPorAnuncianteService;
-    private final ReservaListarPorSolicitanteService reservaListarPorSolicitanteService;
-    private final ReservaPagarReservaService reservaPagarReservaService;
-    private final ReservaCancelarReservaService reservaCancelarReservaService;
-    private final ReservaEstornarReservaService reservaEstornarReservaService;
 
-    public ReservaController(ReservaSalvarReservaService reservaSalvarReservaService,
-                             ReservaListarPorAnuncianteService reservaListarPorAnuncianteService,
-                             ReservaListarPorSolicitanteService reservaListarPorSolicitanteService,
-                             ReservaPagarReservaService reservaPagarReservaService,
-                             ReservaCancelarReservaService reservaCancelarReservaService,
-                             ReservaEstornarReservaService reservaEstornarReservaService
-    ) {
-        this.reservaSalvarReservaService = reservaSalvarReservaService;
-        this.reservaListarPorAnuncianteService = reservaListarPorAnuncianteService;
-        this.reservaListarPorSolicitanteService = reservaListarPorSolicitanteService;
-        this.reservaPagarReservaService = reservaPagarReservaService;
-        this.reservaCancelarReservaService = reservaCancelarReservaService;
-        this.reservaEstornarReservaService = reservaEstornarReservaService;
+    private final ServiceLayer serviceLayer;
+
+    public ReservaController(ServiceLayer serviceLayer) {
+        this.serviceLayer = serviceLayer;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InformacaoReservaResponse salvar(@RequestBody @Valid CadastrarReservaRequest body) {
-        return reservaSalvarReservaService.execute(body);
+        return serviceLayer.salvarReserva(body);
     }
 
     @GetMapping(value = "/solicitantes/{idSolicitante}")
@@ -64,7 +49,7 @@ public class ReservaController {
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
 
-        Page<Reserva> lista = reservaListarPorSolicitanteService.execute(page,
+        Page<Reserva> lista = serviceLayer.listarReservaPorSolicitante(page,
                 size,
                 ordenacao,
                 idSolicitante,
@@ -83,7 +68,7 @@ public class ReservaController {
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
 
-        Page<Reserva> lista = reservaListarPorAnuncianteService.execute(page,
+        Page<Reserva> lista = serviceLayer.listarReservaPorAnunciante(page,
                 size,
                 ordenacao,
                 idAnunciante);
@@ -94,19 +79,19 @@ public class ReservaController {
     @ResponseStatus(HttpStatus.OK)
     public void pagarReserva(@PathVariable Long idReserva,
                              @RequestBody @Valid FormaPagamento formaPagamento) {
-        reservaPagarReservaService.execute(idReserva, formaPagamento);
+        serviceLayer.pagarReserva(idReserva, formaPagamento);
     }
 
     @PutMapping(value = "/{idReserva}/pagamentos/cancelar")
     @ResponseStatus(HttpStatus.OK)
     public void cancelarReserva(@PathVariable Long idReserva) {
-        reservaCancelarReservaService.execute(idReserva);
+        serviceLayer.cancelarReserva(idReserva);
     }
 
     @PutMapping(value = "/{idReserva}/pagamentos/estornar")
     @ResponseStatus(HttpStatus.OK)
     public void estornarReserva(@PathVariable Long idReserva) {
-        reservaEstornarReservaService.execute(idReserva);
+        serviceLayer.estornarReserva(idReserva);
     }
 
 

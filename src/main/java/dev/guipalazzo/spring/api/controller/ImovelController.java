@@ -3,7 +3,7 @@ package dev.guipalazzo.spring.api.controller;
 import dev.guipalazzo.spring.api.domain.Imovel;
 import dev.guipalazzo.spring.api.exception.ObjetoNaoEncontradoPorIdException;
 import dev.guipalazzo.spring.api.request.CadastrarImovelRequest;
-import dev.guipalazzo.spring.api.service.ImovelService;
+import dev.guipalazzo.spring.api.service.ServiceLayer;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -24,16 +24,16 @@ import java.util.Map;
 @RequestMapping("/imoveis")
 public class ImovelController {
 
-    private final ImovelService imovelService;
+    private final ServiceLayer serviceLayer;
 
-    public ImovelController(ImovelService imovelService) {
-        this.imovelService = imovelService;
+    public ImovelController(ServiceLayer serviceLayer) {
+        this.serviceLayer = serviceLayer;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Imovel salvar(@RequestBody @Valid CadastrarImovelRequest cadastroImovelRequest) {
-        return imovelService.salvar(cadastroImovelRequest);
+        return serviceLayer.salvarImovel(cadastroImovelRequest);
     }
 
     @GetMapping
@@ -43,7 +43,7 @@ public class ImovelController {
             @RequestParam(defaultValue = "identificacao,asc") String[] sort
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
-        Page<Imovel> lista = imovelService.listarTodos(page, size, ordenacao);
+        Page<Imovel> lista = serviceLayer.listarTodosImovel(page, size, ordenacao);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -55,20 +55,20 @@ public class ImovelController {
             @PathVariable Long idProprietario
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
-        Page<Imovel> lista = imovelService.listarPorProprietario(page, size, ordenacao, idProprietario);
+        Page<Imovel> lista = serviceLayer.listarPorProprietario(page, size, ordenacao, idProprietario);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{idImovel}")
     @ResponseStatus(HttpStatus.OK)
     public Imovel listarUmPorId(@PathVariable Long idImovel) {
-        return imovelService.listarImovelPorId(idImovel).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Imovel.class.getSimpleName(), idImovel));
+        return serviceLayer.listarImovelPorId(idImovel).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Imovel.class.getSimpleName(), idImovel));
     }
 
     @DeleteMapping(value = "/{idImovel}")
     @ResponseStatus(HttpStatus.OK)
     public void deletar(@PathVariable Long idImovel) {
-        imovelService.deletarImovel(idImovel);
+        serviceLayer.deletarImovel(idImovel);
     }
 
     // From https://www.baeldung.com/spring-boot-bean-validation
