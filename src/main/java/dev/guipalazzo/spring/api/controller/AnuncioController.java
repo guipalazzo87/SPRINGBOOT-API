@@ -1,7 +1,8 @@
 package dev.guipalazzo.spring.api.controller;
 
 import dev.guipalazzo.spring.api.domain.Anuncio;
-import dev.guipalazzo.spring.api.service.AnuncioService;
+import dev.guipalazzo.spring.api.request.CadastrarAnuncioRequest;
+import dev.guipalazzo.spring.api.service.ServiceLayer;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,18 +24,17 @@ import java.util.Map;
 public class AnuncioController {
 
 //    private final AnuncioSalvarService anuncioSalvarService;
-    private final AnuncioService anuncioService;
+    private final ServiceLayer serviceLayer;
 
-    public AnuncioController(AnuncioService anuncioService) {//, AnuncioSalvarService anuncioSalvarService) {
-        this.anuncioService = anuncioService;
-//        this.anuncioSalvarService = anuncioSalvarService;
+    public AnuncioController(ServiceLayer serviceLayer) {
+        this.serviceLayer = serviceLayer;
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Anuncio salvar(@RequestBody @Valid CadastrarAnuncioRequest body) {
-//        return anuncioSalvarService.salvar(body);
-//    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Anuncio salvar(@RequestBody @Valid CadastrarAnuncioRequest body) {
+        return serviceLayer.salvarAnuncio(body);
+    }
 
     @GetMapping
     public ResponseEntity<Page<Anuncio>> listarTodos(
@@ -42,7 +43,7 @@ public class AnuncioController {
             @RequestParam(defaultValue = "valorDiaria,asc") String[] sort
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
-        Page<Anuncio> lista = anuncioService.listarTodos(page, size, ordenacao);
+        Page<Anuncio> lista = serviceLayer.listarTodosAnuncios(page, size, ordenacao);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -54,14 +55,14 @@ public class AnuncioController {
             @PathVariable Long idAnunciante
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
-        Page<Anuncio> lista = anuncioService.listarPorAnunciante(page, size, ordenacao, idAnunciante);
+        Page<Anuncio> lista = serviceLayer.listarAnunciosPorAnunciante(page, size, ordenacao, idAnunciante);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{idAnuncio}")
     @ResponseStatus(HttpStatus.OK)
     public void deletar(@PathVariable Long idAnuncio) {
-        anuncioService.deletarAnuncio(idAnuncio);
+        serviceLayer.deletarAnuncio(idAnuncio);
     }
 
     // From https://www.baeldung.com/spring-boot-bean-validation

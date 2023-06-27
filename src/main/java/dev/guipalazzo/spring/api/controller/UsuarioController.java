@@ -4,10 +4,7 @@ import dev.guipalazzo.spring.api.domain.Usuario;
 import dev.guipalazzo.spring.api.exception.NenhumUsuarioEncontradoPorCpfException;
 import dev.guipalazzo.spring.api.exception.ObjetoNaoEncontradoPorIdException;
 import dev.guipalazzo.spring.api.request.AtualizarUsuarioRequest;
-import dev.guipalazzo.spring.api.service.UsuarioListarTodosService;
-import dev.guipalazzo.spring.api.service.UsuarioListarUmService;
-import dev.guipalazzo.spring.api.service.UsuarioSalvarUsuarioService;
-import dev.guipalazzo.spring.api.service.UsuarioListarPorCpfService;
+import dev.guipalazzo.spring.api.service.ServiceLayer;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -30,24 +27,16 @@ import java.util.Map;
 public class UsuarioController {
 
 
-    private final UsuarioListarPorCpfService usuarioListarPorCpfService;
+    private final ServiceLayer serviceLayer;
 
-    private final UsuarioListarTodosService usuarioListarTodosService;
-
-    private final UsuarioSalvarUsuarioService usuarioSalvarUsuarioService;
-    private final UsuarioListarUmService usuarioListarUmService;
-
-    public UsuarioController(UsuarioListarPorCpfService usuarioListarPorCpfService, UsuarioListarTodosService usuarioListarTodosService, UsuarioSalvarUsuarioService usuarioSalvarUsuarioService, UsuarioListarUmService usuarioListarUmService) {
-        this.usuarioListarPorCpfService = usuarioListarPorCpfService;
-        this.usuarioListarTodosService = usuarioListarTodosService;
-        this.usuarioSalvarUsuarioService = usuarioSalvarUsuarioService;
-        this.usuarioListarUmService = usuarioListarUmService;
+    public UsuarioController(ServiceLayer serviceLayer) {
+        this.serviceLayer = serviceLayer;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario salvar(@Valid @RequestBody Usuario usuario) {
-        return usuarioSalvarUsuarioService.salvar(usuario);
+        return serviceLayer.salvarUsuario(usuario);
     }
 
     @GetMapping
@@ -57,24 +46,24 @@ public class UsuarioController {
             @RequestParam(defaultValue = "nome,asc") String[] sort
     ) {
         List<Order> ordenacao = getSort(sort);
-        Page<Usuario> lista = usuarioListarTodosService.listAll(page, size, ordenacao);
+        Page<Usuario> lista = serviceLayer.listarTodosUsuarios(page, size, ordenacao);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{idUsuario}")
     public Usuario listarUmPorId(@PathVariable Long idUsuario) {
-        return usuarioListarUmService.listarUm(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
+        return serviceLayer.listarUmUsuario(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
     }
 
     @PutMapping(value = "/{idUsuario}")
     public Usuario atualizarUsuario(@PathVariable Long idUsuario,
                                     @Valid @RequestBody AtualizarUsuarioRequest body) {
-        return usuarioListarUmService.atualizar(idUsuario, body);
+        return serviceLayer.atualizarUsuario(idUsuario, body);
     }
 
     @GetMapping(value = "/cpf/{cpf}")
     public Usuario listarUmPorCpf(@PathVariable String cpf) {
-        return usuarioListarPorCpfService.listarPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
+        return serviceLayer.listarUsuarioPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
     }
 
 
