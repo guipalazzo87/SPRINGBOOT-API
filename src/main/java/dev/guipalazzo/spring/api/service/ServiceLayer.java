@@ -15,15 +15,11 @@ import dev.guipalazzo.spring.api.response.DadosAnuncioResponse;
 import dev.guipalazzo.spring.api.response.DadosSolicitanteResponse;
 import dev.guipalazzo.spring.api.response.InformacaoReservaResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -32,7 +28,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -75,24 +70,19 @@ public class ServiceLayer {
 
     public void deletarAnuncio(Long idAnuncio) {
         Optional<Anuncio> optionalAnuncio = listarAnuncioPorId(idAnuncio);
-        optionalAnuncio.get().getImovel();
-        Anuncio anuncio = optionalAnuncio.orElse(null);
+        Anuncio anuncio = optionalAnuncio.orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Anuncio.class.getSimpleName(), idAnuncio));
 
-        if (anuncio != null) {
-            Anuncio novoAnuncio = new Anuncio(
-                    anuncio.getId(),
-                    anuncio.getTipoAnuncio(),
-                    anuncio.getImovel(),
-                    anuncio.getAnunciante(),
-                    anuncio.getValorDiaria(),
-                    anuncio.getFormasAceitas(),
-                    anuncio.getDescricao(),
-                    false
-            );
-            anuncioRepository.save(novoAnuncio);
-        } else {
-            throw new ObjetoNaoEncontradoPorIdException(Anuncio.class.getSimpleName(), idAnuncio);
-        }
+        Anuncio novoAnuncio = new Anuncio(
+                anuncio.getId(),
+                anuncio.getTipoAnuncio(),
+                anuncio.getImovel(),
+                anuncio.getAnunciante(),
+                anuncio.getValorDiaria(),
+                anuncio.getFormasAceitas(),
+                anuncio.getDescricao(),
+                false
+        );
+        anuncioRepository.save(novoAnuncio);
     }
     public List<Anuncio> listarAnunciosPorImovel(Long idImovel) {
         return anuncioRepository.findAllByImovelIdAndAtivo(idImovel);
@@ -445,16 +435,10 @@ public class ServiceLayer {
         boolean cpfJaUtilizado = usuarioRepository.existsByCpf(usuario.getCpf());
         if (cpfJaUtilizado) throw new CpfJaCadastradoException(usuario.getCpf());
 
-        ParameterizedTypeReference<String> responseType =
-                new ParameterizedTypeReference<>() {
-                };
-
         try {
-            RequestEntity<Void> request = RequestEntity.get("https://picsum.photos/200")
-                    .accept(MediaType.APPLICATION_JSON).build();
-            String urlString = Objects.requireNonNull(new RestTemplate().exchange(request, responseType).getHeaders().get("Picsum-Id")).get(0);
-            if (urlString != null) {
-                usuario.setAvatarUrl("https://picsum.photos/id/" + urlString + "/200");
+            String pictureId = feignServiceUtil.getPicture().headers().get("picsum-id").iterator().next();
+            if (pictureId != null) {
+                usuario.setAvatarUrl("https://picsum.photos/id/" + pictureId + "/200");
             }
         } catch (Exception e) {
             e.printStackTrace();
