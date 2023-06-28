@@ -2,8 +2,8 @@ package dev.guipalazzo.spring.api.controller;
 
 import dev.guipalazzo.spring.api.domain.FormaPagamento;
 import dev.guipalazzo.spring.api.domain.Reserva;
-import dev.guipalazzo.spring.api.request.CadastrarReservaRequest;
-import dev.guipalazzo.spring.api.response.InformacaoReservaResponse;
+import dev.guipalazzo.spring.api.controller.request.CadastrarReservaRequest;
+import dev.guipalazzo.spring.api.controller.response.InformacaoReservaResponse;
 import dev.guipalazzo.spring.api.service.*;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
@@ -22,20 +22,20 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/reservas")
+@RequestMapping("/api/v1/reservas")
 public class ReservaController {
 
 
-    private final ServiceLayer serviceLayer;
+    private final DomainService service;
 
-    public ReservaController(ServiceLayer serviceLayer) {
-        this.serviceLayer = serviceLayer;
+    public ReservaController(DomainService service) {
+        this.service = service;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InformacaoReservaResponse salvar(@RequestBody @Valid CadastrarReservaRequest body) {
-        return serviceLayer.salvarReserva(body);
+        return service.salvarReserva(body);
     }
 
     @GetMapping(value = "/solicitantes/{idSolicitante}")
@@ -49,7 +49,7 @@ public class ReservaController {
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
 
-        Page<Reserva> lista = serviceLayer.listarReservaPorSolicitante(page,
+        Page<Reserva> lista = service.listarReservaPorSolicitante(page,
                 size,
                 ordenacao,
                 idSolicitante,
@@ -68,7 +68,7 @@ public class ReservaController {
     ) {
         List<Sort.Order> ordenacao = getSort(sort);
 
-        Page<Reserva> lista = serviceLayer.listarReservaPorAnunciante(page,
+        Page<Reserva> lista = service.listarReservaPorAnunciante(page,
                 size,
                 ordenacao,
                 idAnunciante);
@@ -79,19 +79,19 @@ public class ReservaController {
     @ResponseStatus(HttpStatus.OK)
     public void pagarReserva(@PathVariable Long idReserva,
                              @RequestBody @Valid FormaPagamento formaPagamento) {
-        serviceLayer.pagarReserva(idReserva, formaPagamento);
+        service.pagarReserva(idReserva, formaPagamento);
     }
 
     @PutMapping(value = "/{idReserva}/pagamentos/cancelar")
     @ResponseStatus(HttpStatus.OK)
     public void cancelarReserva(@PathVariable Long idReserva) {
-        serviceLayer.cancelarReserva(idReserva);
+        service.cancelarReserva(idReserva);
     }
 
     @PutMapping(value = "/{idReserva}/pagamentos/estornar")
     @ResponseStatus(HttpStatus.OK)
     public void estornarReserva(@PathVariable Long idReserva) {
-        serviceLayer.estornarReserva(idReserva);
+        service.estornarReserva(idReserva);
     }
 
 

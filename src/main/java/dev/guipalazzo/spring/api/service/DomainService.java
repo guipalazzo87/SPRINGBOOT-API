@@ -7,13 +7,13 @@ import dev.guipalazzo.spring.api.repository.AnuncioRepository;
 import dev.guipalazzo.spring.api.repository.ImovelRepository;
 import dev.guipalazzo.spring.api.repository.ReservaRepository;
 import dev.guipalazzo.spring.api.repository.UsuarioRepository;
-import dev.guipalazzo.spring.api.request.AtualizarUsuarioRequest;
-import dev.guipalazzo.spring.api.request.CadastrarAnuncioRequest;
-import dev.guipalazzo.spring.api.request.CadastrarImovelRequest;
-import dev.guipalazzo.spring.api.request.CadastrarReservaRequest;
-import dev.guipalazzo.spring.api.response.DadosAnuncioResponse;
-import dev.guipalazzo.spring.api.response.DadosSolicitanteResponse;
-import dev.guipalazzo.spring.api.response.InformacaoReservaResponse;
+import dev.guipalazzo.spring.api.controller.request.AtualizarUsuarioRequest;
+import dev.guipalazzo.spring.api.controller.request.CadastrarAnuncioRequest;
+import dev.guipalazzo.spring.api.controller.request.CadastrarImovelRequest;
+import dev.guipalazzo.spring.api.controller.request.CadastrarReservaRequest;
+import dev.guipalazzo.spring.api.controller.response.DadosAnuncioResponse;
+import dev.guipalazzo.spring.api.controller.response.DadosSolicitanteResponse;
+import dev.guipalazzo.spring.api.controller.response.InformacaoReservaResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ServiceLayer {
+public class DomainService {
     private final AnuncioRepository anuncioRepository;
     private final ReservaRepository reservaRepository;
     private final ImovelRepository imovelRepository;
@@ -39,8 +39,8 @@ public class ServiceLayer {
     private final FeignServiceUtil feignServiceUtil;
 
     @Autowired
-    public ServiceLayer(AnuncioRepository anuncioRepository,
-                        ReservaRepository reservaRepository, ImovelRepository imovelRepository, UsuarioRepository usuarioRepository, FeignServiceUtil feignServiceUtil) {
+    public DomainService(AnuncioRepository anuncioRepository,
+                         ReservaRepository reservaRepository, ImovelRepository imovelRepository, UsuarioRepository usuarioRepository, FeignServiceUtil feignServiceUtil) {
         this.anuncioRepository = anuncioRepository;
         this.reservaRepository = reservaRepository;
         this.imovelRepository = imovelRepository;

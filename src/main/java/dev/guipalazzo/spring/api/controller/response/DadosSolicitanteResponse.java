@@ -1,4 +1,4 @@
-package dev.guipalazzo.spring.api.response;
+package dev.guipalazzo.spring.api.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

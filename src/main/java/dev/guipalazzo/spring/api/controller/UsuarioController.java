@@ -3,8 +3,8 @@ package dev.guipalazzo.spring.api.controller;
 import dev.guipalazzo.spring.api.domain.Usuario;
 import dev.guipalazzo.spring.api.exception.NenhumUsuarioEncontradoPorCpfException;
 import dev.guipalazzo.spring.api.exception.ObjetoNaoEncontradoPorIdException;
-import dev.guipalazzo.spring.api.request.AtualizarUsuarioRequest;
-import dev.guipalazzo.spring.api.service.ServiceLayer;
+import dev.guipalazzo.spring.api.controller.request.AtualizarUsuarioRequest;
+import dev.guipalazzo.spring.api.service.DomainService;
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -23,20 +23,20 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
 
 
-    private final ServiceLayer serviceLayer;
+    private final DomainService service;
 
-    public UsuarioController(ServiceLayer serviceLayer) {
-        this.serviceLayer = serviceLayer;
+    public UsuarioController(DomainService service) {
+        this.service = service;
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario salvar(@Valid @RequestBody Usuario usuario) {
-        return serviceLayer.salvarUsuario(usuario);
+        return service.salvarUsuario(usuario);
     }
 
     @GetMapping
@@ -46,24 +46,24 @@ public class UsuarioController {
             @RequestParam(defaultValue = "nome,asc") String[] sort
     ) {
         List<Order> ordenacao = getSort(sort);
-        Page<Usuario> lista = serviceLayer.listarTodosUsuarios(page, size, ordenacao);
+        Page<Usuario> lista = service.listarTodosUsuarios(page, size, ordenacao);
         return new ResponseEntity<>(lista, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{idUsuario}")
     public Usuario listarUmPorId(@PathVariable Long idUsuario) {
-        return serviceLayer.listarUmUsuario(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
+        return service.listarUmUsuario(idUsuario).orElseThrow(() -> new ObjetoNaoEncontradoPorIdException(Usuario.class.getSimpleName(), idUsuario));
     }
 
     @PutMapping(value = "/{idUsuario}")
     public Usuario atualizarUsuario(@PathVariable Long idUsuario,
                                     @Valid @RequestBody AtualizarUsuarioRequest body) {
-        return serviceLayer.atualizarUsuario(idUsuario, body);
+        return service.atualizarUsuario(idUsuario, body);
     }
 
     @GetMapping(value = "/cpf/{cpf}")
     public Usuario listarUmPorCpf(@PathVariable String cpf) {
-        return serviceLayer.listarUsuarioPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
+        return service.listarUsuarioPorCpf(cpf).orElseThrow(() -> new NenhumUsuarioEncontradoPorCpfException(cpf));
     }
 
 

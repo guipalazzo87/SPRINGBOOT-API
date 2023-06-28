@@ -1,4 +1,4 @@
-package dev.guipalazzo.spring.api.request;
+package dev.guipalazzo.spring.api.controller.request;
 
 import dev.guipalazzo.spring.api.domain.Endereco;
 import jakarta.persistence.CascadeType;
